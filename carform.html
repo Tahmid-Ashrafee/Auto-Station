@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Enter Car Details</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="#" id="loginLink">Login</a></li>
+                <li><a href="#" id="registerLink">Register</a></li>
+                <li><span id="loggedInUser"></span></li>
+                <li><a href="carform.html">Enter Car Details</a></li>
+
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="carForm"  class="form-container">
+            <h2>Enter Car Details</h2>
+            <form id="carForm" action="#" onsubmit="handleCarForm(event)">
+                <label for="carName">Name of Car:</label>
+                <input type="text" id="carName" required>
+
+                <label for="carType">Type of Car:</label>
+                <select id="carType" required>
+                    <option value="gasoline">Gasoline</option>
+                    <option value="hybrid">Hybrid</option>
+                    <option value="electric">Electric</option>
+                </select>
+
+                <label for="carDescription">Description:</label>
+                <textarea id="carDescription" rows="4" required></textarea>
+
+                <!-- Checkbox for car status -->
+                <div class="form-group">
+                    <label for="carStatus">Status:</label>
+                    <div>
+                    <input type="checkbox" id="carStatusAvailable" name="carStatus" value="Available">
+                    <label for="carStatusAvailable">Available</label>
+                    </div>
+                    <div>
+                    <input type="checkbox" id="carStatusUnavailable" name="carStatus" value="Unavailable">
+                    <label for="carStatusUnavailable">Unavailable</label>
+                    </div>
+                </div>
+
+                <!-- Date of Import field -->
+                <div class="form-group">
+                    <label for="dateOfImport">Date of Import:</label>
+                    <input type="date" id="dateOfImport" name="dateOfImport" required>
+                </div>
+  
+                
+  
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // Load previous data in the form
+        window.addEventListener("DOMContentLoaded", function() {
+          // Check if we are editing a car entry
+          var editingCarEntry = localStorage.getItem("editingCarEntry");
+          if (editingCarEntry) {
+            // Parse the editing car entry from local storage
+            editingCarEntry = JSON.parse(editingCarEntry);
+    
+            // Set the form values to the editing car entry data
+            document.getElementById("carName").value = editingCarEntry.name;
+            document.getElementById("carType").value = editingCarEntry.type;
+            document.getElementById("carDescription").value = editingCarEntry.description;
+            document.getElementById("carStatusAvailable").checked = editingCarEntry.status === "Available";
+            document.getElementById("carStatusUnavailable").checked = editingCarEntry.status === "Unavailable";
+            document.getElementById("dateOfImport").value = editingCarEntry.dateOfImport;
+    
+            // Remove the editing car entry from local storage
+            localStorage.removeItem("editingCarEntry");
+          }
+        });
+      </script>
+</body>
+
+</html>

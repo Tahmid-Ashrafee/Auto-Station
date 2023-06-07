@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homepage</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Homepage</h1>
+        <div>
+            <a href="#" id="loginLink" onclick="loginClick()">Login</a> |
+            <a href="#" id="registerLink" onclick="registrationClick()">Register</a>
+        </div>
+    </header>
+
+    <div id="loginForm" class="form-container" style="display: none;">
+        <h2>Login</h2>
+        <form onsubmit="handleLogin(event)">
+          <label for="loginEmail">Email:</label>
+          <input type="email" id="loginEmail" required>
+          <label for="loginPassword">Password:</label>
+          <input type="password" id="loginPassword" required>
+          <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <div id="registerForm" class="form-container" style="display: none;">
+        <h2>Register</h2>
+        <form onsubmit="handleRegistration(event)">
+          <label for="registerUsername">Username:</label>
+          <input type="text" id="registerUsername" required>
+          <label for="registerEmail">Email:</label>
+          <input type="email" id="registerEmail" required>
+          <label for="registerPhoneNumber">Phone Number:</label>
+          <input type="tel" id="registerPhoneNumber" pattern="[0-9]{10}" required>
+          <label for="registerPassword">Password:</label>
+          <input type="password" id="registerPassword" required>
+          <button type="submit">Register</button>
+      </form>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Enter search term">
+        <select id="category">
+            <option value="">All Categories</option>
+            <option value="category1">Category 1</option>
+            <option value="category2">Category 2</option>
+            <option value="category3">Category 3</option>
+        </select>
+        <label>
+            <input type="checkbox" id="checkbox"> Checkbox
+        </label>
+        <label>
+            <input type="radio" name="radio" value="option1" checked> Option 1
+        </label>
+        <label>
+            <input type="radio" name="radio" value="option2"> Option 2
+        </label>
+        <input type="button" value="Search" onclick="handleSearch()">
+    </div>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+            </tr>
+            <tr>
+                <td>Data 4</td>
+                <td>Data 5</td>
+                <td>Data 6</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script src="script.js"></script>
+</body>
+</html>
