@@ -10,11 +10,8 @@
     <header>
         <nav>
             <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="#" id="loginLink">Login</a></li>
-                <li><a href="#" id="registerLink">Register</a></li>
-                <li><span id="loggedInUser"></span></li>
-                <li><a href="carform.html">Enter Car Details</a></li>
+                <li><a href="index.html">Home</a></li>
+                
 
             </ul>
         </nav>
@@ -41,12 +38,29 @@
                 <div class="form-group">
                     <label for="carStatus">Status:</label>
                     <div>
-                    <input type="checkbox" id="carStatusAvailable" name="carStatus" value="Available">
-                    <label for="carStatusAvailable">Available</label>
+                        <input type="radio" id="carStatusAvailable" name="carStatus" value="available">
+                        <label for="carStatusAvailable">Available</label>
                     </div>
                     <div>
-                    <input type="checkbox" id="carStatusUnavailable" name="carStatus" value="Unavailable">
-                    <label for="carStatusUnavailable">Unavailable</label>
+                        <input type="radio" id="carStatusUnavailable" name="carStatus" value="unavailable">
+                        <label for="carStatusUnavailable">Unavailable</label>
+                    </div>
+                </div>
+
+                <!-- Checkbox for car color -->
+                <div class="form-group">
+                    <label for="carColor">Color:</label>
+                    <div>
+                        <input type="checkbox" id="searchColorWhite" name="carColor" value="white">
+                        <label for="searchColorWhite">White</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="searchColorSilver" name="carColor" value="silver">
+                        <label for="searchColorWhite">Silver</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="searchColorBlack" name="carColor" value="black">
+                        <label for="searchColorWhite">Black</label>
                     </div>
                 </div>
 
@@ -78,8 +92,18 @@
             document.getElementById("carName").value = editingCarEntry.name;
             document.getElementById("carType").value = editingCarEntry.type;
             document.getElementById("carDescription").value = editingCarEntry.description;
-            document.getElementById("carStatusAvailable").checked = editingCarEntry.status === "Available";
-            document.getElementById("carStatusUnavailable").checked = editingCarEntry.status === "Unavailable";
+            document.getElementById("carStatusAvailable").checked = editingCarEntry.status === "available";
+            document.getElementById("carStatusUnavailable").checked = editingCarEntry.status === "unavailable";
+
+            // Check the car colors checkboxes based on the values in editingCarEntry.colors
+            var carColors = editingCarEntry.colors || [];
+            document.getElementById("searchColorWhite").checked = carColors.includes("white");
+            document.getElementById("searchColorSilver").checked = carColors.includes("silver");
+            document.getElementById("searchColorBlack").checked = carColors.includes("black");
+
+            // document.getElementById("searchColorWhite").checked = editingCarEntry.colors === "white";
+            // document.getElementById("searchColorSilver").checked = editingCarEntry.colors === "silver";
+            // document.getElementById("searchColorBlack").checked = editingCarEntry.colors === "black";
             document.getElementById("dateOfImport").value = editingCarEntry.dateOfImport;
     
             // Remove the editing car entry from local storage

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homepage</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="login.html" id="loginLink">Login</a></li>
+                <li><a href="register.html" id="registerLink">Register</a></li>
+                <li><a href="carform.html" id="enterCarDetailsLink ">Enter Car Details</a></li>
+                <li><a href="#" id="logoutLink" style="display: none;">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="searchSection">
+        <label for="searchName">Name:</label>
+        <input type="text" id="searchName">
+        <br>
+        <label for="searchCategory">Category:</label>
+        <select id="searchCategory">
+            <option value="">All</option>
+            <option value="gasoline">Gasoline</option>
+            <option value="electric">Electric</option>
+            <option value="hybrid">Hybrid</option>
+        </select>
+        <br>
+        <label>Status:</label>
+        <input type="radio" name="searchStatus" value="Available"> Available
+        <input type="radio" name="searchStatus" value="Unavailable"> Unavailable
+        <input type="radio" name="searchStatus" value="" checked> All
+        <br>
+        <label for="searchColors">Search Colors:</label>
+        <div>
+            <input type="checkbox" id="searchColorWhite" name="searchColors" value="white">
+            <label for="searchColorWhite">White</label>
+        </div>
+        <div>
+            <input type="checkbox" id="searchColorSilver" name="searchColors" value="silver">
+            <label for="searchColorSilver">Silver</label>
+        </div>
+        <div>
+            <input type="checkbox" id="searchColorBlack" name="searchColors" value="black">
+            <label for="searchColorBlack">Black</label>
+        </div>
+        <label for="searchDate">Date:</label>
+        <input type="date" id="searchDate">
+        <br>
+        <label for="resetCheckbox">Reset:</label>
+        <input type="checkbox" id="resetCheckbox">
+        <br>
+        <button onclick="displayCarEntries()">Search</button>
+    </div>
+
+    <div id="homeContent">
+        <h2>Welcome, <span id="username"></span>!</h2>
+        <table id="carTable">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Color</th>
+                    <th>Date of Import</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody id="carTableBody">
+                <!-- Table body content will be added dynamically -->
+            </tbody>
+        </table>
+        <button onclick="deleteSelectedCars()" class="delete-button">Delete Selected</button>
+        <div id="pagination"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

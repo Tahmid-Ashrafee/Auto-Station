@@ -1,0 +1,579 @@
+var loginLink = document.getElementById("loginLink");
+var registerLink = document.getElementById("registerLink");
+var loginForm = document.getElementById("loginForm");
+var registerForm = document.getElementById("registerForm");
+
+var entriesPerPage = 2; // Number of car entries to display per page
+var currentPage = 1; // Current page number
+
+var paginationButtons = document.getElementById("paginationButtons");
+
+// Get the "Enter Car Details" link element
+var enterCarDetailsLink = document.querySelector('a[href="carform.html"]');
+
+// Add click event listener to the "Enter Car Details" link
+enterCarDetailsLink.addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent the default link behavior
+
+    // Check if user is logged in
+    if (!isLoggedIn()) {
+        alert("Please login first!"); // Display a prompt to login
+    } else {
+        // If the user is logged in, proceed to carform.html
+        window.location.href = "carform.html";
+    }
+});
+
+// Function to check if the user is logged in
+function isLoggedIn() {
+    // Check the visibility of the logout link
+    var logoutLink = document.querySelector('#logoutLink');
+    return (logoutLink.style.display !== 'none');
+}
+
+
+
+function isLoggedIn() {
+    var loggedInUser = localStorage.getItem("loggedInUser");
+    return loggedInUser !== null;
+}
+
+// Function to handle logout
+function handleLogout(event) {
+    event.preventDefault();
+
+    // Remove the logged-in user from local storage
+    localStorage.removeItem("loggedInUser");
+
+    // Hide the logout link and show the login and register links
+    document.getElementById("logoutLink").style.display = "none";
+    document.getElementById("loginLink").style.display = "inline";
+    document.getElementById("registerLink").style.display = "inline";
+
+    // Clear the home content
+    document.getElementById("homeContent").innerHTML = "";
+}
+
+// Function to update the header based on the login status
+function updateHeader() {
+    var loginLink = document.getElementById("loginLink");
+    var registerLink = document.getElementById("registerLink");
+    var logoutLink = document.getElementById("logoutLink");
+
+    if (isLoggedIn()) {
+        // User is logged in
+        loginLink.style.display = "none";
+        registerLink.style.display = "none";
+        logoutLink.style.display = "inline";
+        
+    } else {
+        // User is not logged in
+        loginLink.style.display = "inline";
+        registerLink.style.display = "inline";
+        logoutLink.style.display = "none";
+    }
+}
+
+// Add event listener to the logout link
+var logoutLink = document.getElementById("logoutLink");
+logoutLink.addEventListener("click", handleLogout);
+
+// Call the updateHeader function to initially set the header based on login status
+updateHeader();
+
+
+// loginLink.addEventListener("click", function() {
+//     loginForm.style.display = "block";
+//     registerForm.style.display = "none";
+// });
+
+// registerLink.addEventListener("click", function() {
+//     registerForm.style.display = "block";
+//     loginForm.style.display = "none";
+// });
+
+function handleLogin(event) {
+    event.preventDefault();
+    var email = document.getElementById("loginEmail").value;
+    var password = document.getElementById("loginPassword").value;
+
+    // Check if the email and password match with the stored data in local storage
+    var storedData = localStorage.getItem("userData");
+    if (storedData) {
+        var userData = JSON.parse(storedData);
+        var userFound = false;
+
+        for (var i = 0; i < userData.length; i++) {
+            if (userData[i].email === email && userData[i].password === password) {
+                userFound = true;
+                break;
+            }
+        }
+
+        if (userFound) {
+            alert("Login successful!");
+            localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("loggedInUser", email);
+            window.location.href = "index.html"; // Redirect to the homepage
+        } else {
+            alert("Invalid email or password.");
+        }
+    } else {
+        alert("User does not exist. Please register.");
+    }
+}
+
+function generateUserID() {
+    var timestamp = Date.now().toString();
+    var randomID = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return timestamp + randomID;
+  }
+
+
+function handleRegistration(event) {
+    event.preventDefault();
+    var username = document.getElementById("registerUsername").value;
+    var email = document.getElementById("registerEmail").value;
+    var phoneNumber = document.getElementById("registerPhoneNumber").value;
+    var password = document.getElementById("registerPassword").value;
+
+    // Generate a unique ID for the user
+    var userID = generateUserID();
+
+    // Validate the input fields
+    if (!username || !email || !phoneNumber || !password) {
+        alert("Please fill in all the fields.");
+        return;
+    }
+
+    // Validate email format
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert("Invalid email format.");
+        return;
+    }
+
+    // Validate phone number format
+    var phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+        alert("Invalid phone number format. Please enter a 10-digit number.");
+        return;
+    }
+
+    // Get the existing user data from local storage
+    var storedData = localStorage.getItem("userData");
+    var userData = [];
+
+    if (storedData) {
+        userData = JSON.parse(storedData);
+    }
+
+    // Check if the email already exists
+    var emailExists = false;
+    for (var i = 0; i < userData.length; i++) {
+        if (userData[i].email === email) {
+            emailExists = true;
+            break;
+        }
+    }
+
+    if (emailExists) {
+        alert("Email already exists. Please choose a different email.");
+    } else {
+
+        var storedData = JSON.parse(localStorage.getItem("userData")) || [] ;
+
+        // Add the new user to the user data array
+        
+        storedData.push({
+            id: userID,
+            username,
+            email,
+            phoneNumber,
+            password
+          });
+
+        // Save the updated user data in local storage
+        localStorage.setItem("userData", JSON.stringify(storedData));
+
+        alert("Registration successful! Please login.");
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+    }
+}
+
+
+
+
+// // Function to handle car form submission
+function handleCarForm(event) {
+    event.preventDefault();
+  
+    // Get form values
+    var loggedInUser = localStorage.getItem("loggedInUser");
+
+    var carName = document.getElementById("carName").value;
+    var carType = document.getElementById("carType").value;
+    var carDescription = document.getElementById("carDescription").value;
+    var carStatus = "";
+  
+    // Get car status
+    var availableCheckbox = document.getElementById("carStatusAvailable");
+    var unavailableCheckbox = document.getElementById("carStatusUnavailable");
+  
+    if (availableCheckbox.checked) {
+      carStatus = availableCheckbox.value;
+    } else if (unavailableCheckbox.checked) {
+      carStatus = unavailableCheckbox.value;
+    }
+  
+    // Get date of import
+    var dateOfImport = document.getElementById("dateOfImport").value;
+  
+    // Create car entry object
+    var carEntry = {
+      userID: loggedInUser,
+      name: carName,
+      type: carType,
+      description: carDescription,
+      status: carStatus,
+      dateOfImport: dateOfImport
+    };
+  
+    // Get existing car entries from local storage
+    var carEntries = JSON.parse(localStorage.getItem("carEntries")) || [];
+  
+    // Get the editing index from local storage
+    var editingIndex = localStorage.getItem("editingIndex");
+  
+    // Check if we are editing an existing car entry
+    if (editingIndex !== null) {
+      // Update the car entry in the car entries array
+      carEntries[editingIndex] = carEntry;
+  
+      // Clear the editing index and car entry data from local storage
+      localStorage.removeItem("editingIndex");
+      localStorage.removeItem("editingCarEntry");
+    } else {
+      // Add the new car entry to the car entries array
+      carEntries.push(carEntry);
+    }
+  
+    // Save the updated car entries to local storage
+    localStorage.setItem("carEntries", JSON.stringify(carEntries));
+  
+    // Redirect to the home page
+    location.href = "index.html";
+  }
+  
+  
+// // Function to edit a car entry
+// function editCarEntry(index) {
+//     var carEntries = JSON.parse(localStorage.getItem("carEntries")) || [];
+//     var carEntry = carEntries[index];
+
+//     // Populate the form with the car entry data
+//     document.getElementById("carName").value = carEntry.name;
+//     document.getElementById("carType").value = carEntry.type;
+//     document.getElementById("carDescription").value = carEntry.description;
+//     document.getElementById("carStatus").checked = carEntry.status === "Upcoming";
+
+//     // Remove the car entry from the local storage
+//     carEntries.splice(index, 1);
+//     localStorage.setItem("carEntries", JSON.stringify(carEntries));
+
+//     // Update the table display
+//     displayCarEntries();
+// }
+
+// Function to handle car entry form submission
+function handleCarEntry(event) {
+    event.preventDefault();
+
+    // Get form values
+    var carName = document.getElementById("carName").value;
+    var carType = document.getElementById("carType").value;
+    var carDescription = document.getElementById("carDescription").value;
+    var carStatus = "";
+
+    // Get car status
+    var availableCheckbox = document.getElementById("carStatusAvailable");
+    var unavailableCheckbox = document.getElementById("carStatusUnavailable");
+
+    if (availableCheckbox.checked) {
+        carStatus = availableCheckbox.value;
+    } else if (unavailableCheckbox.checked) {
+        carStatus = unavailableCheckbox.value;
+    }
+
+    // Get date of import
+    var dateOfImport = document.getElementById("dateOfImport").value;
+
+    // Get the logged-in user's ID
+    var loggedInUser = localStorage.getItem("loggedInUser");
+
+    // Create car entry object
+    var carEntry = {
+        userID: loggedInUser,
+        name: carName,
+        type: carType,
+        description: carDescription,
+        status: carStatus,
+        dateOfImport: dateOfImport
+    };
+
+    // Save the car entry to local storage
+    var carEntries = JSON.parse(localStorage.getItem("carEntries")) || [];
+    carEntries.push(carEntry);
+    localStorage.setItem("carEntries", JSON.stringify(carEntries));
+
+    // Reset the form
+    document.getElementById("carName").value = "";
+    document.getElementById("carType").value = "gasoline";
+    document.getElementById("carDescription").value = "";
+    document.getElementById("carStatus").checked = false;
+
+    // Redirect to the home page
+    location.href = "index.html";
+}
+
+// Function to display the car entries in the table
+
+function displayCarEntries(pageNumber = 1, entriesPerPage = 2) {
+    var carEntries = JSON.parse(localStorage.getItem("carEntries")) || [];
+    var loggedInUser = localStorage.getItem("loggedInUser");
+
+    var tableBody = document.querySelector("#carTable tbody");
+    tableBody.innerHTML = "";
+
+    // Filter car entries based on search criteria
+    var searchName = document.getElementById("searchName").value.toLowerCase();
+    var searchCategory = document.getElementById("searchCategory").value.toLowerCase();
+    var searchStatus = document.querySelector('input[name="searchStatus"]:checked')?.value;
+    var searchDate = document.getElementById("searchDate").value;
+
+    var filteredCarEntries = carEntries.filter(function (carEntry) {
+        return (
+            carEntry.userID === loggedInUser &&
+            (searchName === "" || carEntry.name.toLowerCase().includes(searchName)) &&
+            (searchCategory === "" || carEntry.type.toLowerCase().includes(searchCategory)) &&
+            (searchStatus === "" || carEntry.status.toLowerCase() === searchStatus.toLowerCase()) &&
+            (searchDate === "" || carEntry.dateOfImport === searchDate)
+        );
+    });
+
+    // Calculate pagination values
+    var totalEntries = filteredCarEntries.length;
+    var totalPages = Math.ceil(totalEntries / entriesPerPage);
+
+    // Adjust the pageNumber value if it exceeds the total number of pages
+    pageNumber = Math.min(pageNumber, totalPages);
+
+    var startIndex = (pageNumber - 1) * entriesPerPage;
+    var endIndex = Math.min(startIndex + entriesPerPage, totalEntries);
+
+    var paginatedCarEntries = filteredCarEntries.slice(startIndex, endIndex);
+
+    paginatedCarEntries.forEach(function (carEntry, index) {
+        var row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="checkbox" id="checkbox${index}" onclick="toggleSelection(${index})"></td>
+            <td>${carEntry.name}</td>
+            <td>${carEntry.type}</td>
+            <td>${carEntry.description}</td>
+            <td>${carEntry.status}</td>
+            <td>${carEntry.dateOfImport}</td>
+            <td>
+                <button onclick="editCarEntry(${index})">Edit</button>
+                <button onclick="deleteCarEntry(${index})">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    // Generate pagination buttons
+    var paginationContainer = document.querySelector("#pagination");
+    paginationContainer.innerHTML = "";
+
+    if (totalPages > 0) {
+        var paginationStart = Math.max(1, pageNumber - 2);
+        var paginationEnd = Math.min(paginationStart + 2, totalPages);
+
+        if (paginationStart > 1) {
+            var button = document.createElement("button");
+            button.textContent = "1";
+            button.addEventListener("click", function () {
+                displayCarEntries(1, entriesPerPage);
+            });
+            paginationContainer.appendChild(button);
+
+            if (paginationStart > 1) {
+                var ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                paginationContainer.appendChild(ellipsis);
+            }
+        }
+
+        for (var i = paginationStart; i <= paginationEnd; i++) {
+            var button = document.createElement("button");
+            button.textContent = i;
+            button.addEventListener("click", function () {
+                displayCarEntries(parseInt(this.textContent), entriesPerPage);
+            });
+            paginationContainer.appendChild(button);
+        }
+
+        if (paginationEnd < totalPages) {
+            if (paginationEnd < totalPages - 1) {
+                var ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                paginationContainer.appendChild(ellipsis);
+            }
+
+            var button = document.createElement("button");
+            button.textContent = totalPages;
+            button.addEventListener("click", function () {
+                displayCarEntries(totalPages, entriesPerPage);
+            });
+            paginationContainer.appendChild(button);
+        }
+    }
+
+    var resetCheckbox = document.getElementById("resetCheckbox");
+    resetCheckbox.addEventListener("change", function () {
+    if (this.checked) {
+        location.reload();
+    }
+    });
+}
+
+displayCarEntries();
+
+var selectedCars = [];
+
+// Function to handle checkbox selection
+function toggleSelection(index) {
+    var checkbox = document.getElementById(`checkbox${index}`);
+
+    // Check if the car entry is already selected
+    if (checkbox.checked) {
+        // If selected, add it to the selectedCars array
+        selectedCars.push(index);
+    } else {
+        // If not selected, remove it from the selectedCars array
+        var selectedIndex = selectedCars.indexOf(index);
+        if (selectedIndex !== -1) {
+            selectedCars.splice(selectedIndex, 1);
+        }
+    }
+}
+
+// Function to delete selected car entries
+function deleteSelectedCars() {
+    var carEntries = JSON.parse(localStorage.getItem("carEntries")) || [];
+
+    // Delete selected car entries from the carEntries array
+    selectedCars.sort(function (a, b) {
+        return b - a;
+    });
+
+    selectedCars.forEach(function (index) {
+        carEntries.splice(index, 1);
+    });
+
+    // Save the modified carEntries back to local storage
+    localStorage.setItem("carEntries", JSON.stringify(carEntries));
+
+    // Clear the selected cars array
+    selectedCars = [];
+
+    // Update the table display
+    displayCarEntries();
+}
+displayCarEntries();
+
+
+// Function to edit a car entry
+// Function to edit a car entry
+function editCarEntry(index) {
+    var carEntries = JSON.parse(localStorage.getItem("carEntries")) || [];
+    var carEntry = carEntries[index];
+
+    // Save the car entry index and data in local storage
+    localStorage.setItem("editingIndex", index);
+    localStorage.setItem("editingCarEntry", JSON.stringify(carEntry));
+
+    // Redirect to the car form page
+    location.href = "carform.html";
+}
+
+
+// Function to delete a car entry
+function deleteCarEntry(index) {
+    var carEntries = JSON.parse(localStorage.getItem("carEntries")) || [];
+
+    // Remove the car entry from the local storage
+    carEntries.splice(index, 1);
+    localStorage.setItem("carEntries", JSON.stringify(carEntries));
+
+    // Update the table display
+    displayCarEntries();
+}
+
+// Check if the user is logged in and display the appropriate content
+function checkLoggedInUser() {
+    var loggedInUser = localStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+        document.getElementById("username").textContent = loggedInUser;
+        
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("registerForm").style.display = "none";
+        displayCarEntries();
+    } else {
+        document.getElementById("username").textContent = "";
+        document.getElementById("loggedInUser").textContent = "";
+        document.getElementById("loginForm").style.display = "block";
+        document.getElementById("registerForm").style.display = "block";
+    }
+}
+
+// Function to handle logout
+function handleLogout() {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "index.html"; // Redirect to the homepage
+    checkLoggedInUser();
+}
+
+// Add event listeners
+document.getElementById("loginLink").addEventListener("click", function (event) {
+    event.preventDefault();
+    document.getElementById("loginForm").style.display = "block";
+    document.getElementById("registerForm").style.display = "none";
+  });
+  
+  document.getElementById("registerLink").addEventListener("click", function (event) {
+    event.preventDefault();
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("registerForm").style.display = "block";
+  });
+  
+  document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var username = document.getElementById("loginUsername").value;
+    localStorage.setItem("loggedInUser", username);
+    checkLoggedInUser();
+  });
+  
+  document.getElementById("registerForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var username = document.getElementById("registerUsername").value;
+    localStorage.setItem("loggedInUser", username);
+    checkLoggedInUser();
+  });
+  
+  // Check logged in user on page load
+  checkLoggedInUser();
+
+
+
+
